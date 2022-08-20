@@ -40,7 +40,7 @@ async function spotdlDownload(url: string): Promise<SpotDLMetadata> {
         axios
             .post(`https://spotify-api-express.herokuapp.com/download?url=${url}`)
             .then((res) => {
-                resolve(res.data.download_url);
+                resolve(res.data);
             })
             .catch(reject);
     });
