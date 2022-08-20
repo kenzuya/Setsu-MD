@@ -1,0 +1,17 @@
+{
+    "New Handlers" :{
+        "prefix": "handler",
+        "body": [
+            "import { WAMethods } from \"../Library/Functions\";",
+            "import { MessageSerializer } from \"../Library/Serialize\";",
+            "const handler = (setsu: WAMethods, m: MessageSerializer) => {",
+            "    $1",
+            "}",
+            "handler.command = [\"\"]",
+            "",
+            "export default handler"
+        ],
+        "description": "Front Matter"
+    },
+    
+}

@@ -1,0 +1,8 @@
+build
+node_modules
+Data/Session
+Data/MemoryStore.json
+Config.json
+Trash
+_**.ts
+Tests
