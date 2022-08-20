@@ -1,0 +1,41 @@
+{
+  "owner": [
+    "ini isi nomor pribadi ato siapa kek (formatnya harus diawali dengan 628)"
+  ],
+  "prefa": [
+    ".",
+    "🐦",
+    "🐤",
+    "🗿",
+    "/"
+  ],
+  "author": "Created by Setsu-Bot \nNumber: (isi nomor bot lu)",
+  "mess": {
+    "admin": "Fitur Khusus Admin Group!",
+    "botAdmin": "Bot Harus Menjadi Admin Terlebih Dahulu!",
+    "owner": "*_Fitur Hanya bisa diakses oleh Owner Bot_*",
+    "group": "*_Fitur Digunakan Hanya Untuk Group!_*",
+    "private": "*_Fitur Digunakan Hanya Untuk Private Chat!_*",
+    "bot": "Fitur Khusus Pengguna Nomor Bot",
+    "wait": "*_Tunggu sebentar ya..._*",
+    "waitM": "```Wait a minute...```",
+    "failed": "*_Ada kesalahan, coba lagi nanti!_*",
+    "nolink": "```Send Linknya!```",
+    "invalid": "*_Invalid URL_*",
+    "done": "*_Done ya kak!_*"
+  },
+  "url": {
+    "thumb": "Direct Link Thumbnail (kalo ada)"
+  },
+  "public": true,
+  "timezone": "Asia/Jakarta",
+  "format": "HH:mm:ss",
+  "SESSION_FOLDER": "./Data/Session",
+  "features": {
+    "tiktok": true,
+    "youtube": true,
+    "instagram": true,
+    "twitter": true
+  },
+  "enableLogs": false
+}
