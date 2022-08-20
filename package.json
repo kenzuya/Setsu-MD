@@ -1,6 +1,6 @@
 {
   "name": "setsu-bot",
-  "version": "3.9.5",
+  "version": "1.0.0",
   "description": "Setsu Bot TypeScript version",
   "main": "index.js",
   "scripts": {
