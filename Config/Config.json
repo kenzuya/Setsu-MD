@@ -1,6 +1,6 @@
 {
   "owner": [
-    "6282213508807"
+    "ini isi nomor pribadi ato siapa kek (formatnya harus diawali dengan 628)"
   ],
   "prefa": [
     ".",
@@ -9,7 +9,7 @@
     "🗿",
     "/"
   ],
-  "author": "Created by Setsu-Bot \nNumber: 085710331443",
+  "author": "Created by Setsu-Bot \nNumber: (isi nomor bot lu)",
   "mess": {
     "admin": "Fitur Khusus Admin Group!",
     "botAdmin": "Bot Harus Menjadi Admin Terlebih Dahulu!",
@@ -25,7 +25,7 @@
     "done": "*_Done ya kak!_*"
   },
   "url": {
-    "thumb": "https://raw.githubusercontent.com/anakanj/c24b1a725e817376d636/main/Setsu.jpg"
+    "thumb": "Direct Link Thumbnail (kalo ada)"
   },
   "public": true,
   "timezone": "Asia/Jakarta",
