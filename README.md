@@ -1,10 +1,10 @@
 <h1 align="center">Setsu-MD</h1>
 
-<h1 align="center">
+<h3 align="center">
 <img src="https://i.ibb.co/rxzwpvK/Picsart-22-08-20-14-14-13-518.jpg" width="200">
-</h1>
+</h3>
 
-<h1 align="center">
+<h3 align="center">
     <a href="https://github.com/Kenzuya">
         <img src="https://img.shields.io/badge/Author-Kenzuya-red">
     </a>
@@ -14,7 +14,7 @@
     <a href="">
         <img src="https://img.shields.io/badge/Setsu--MD-v1.0.0-blue">
     </a>
-</h1>
+</h3>
 
 ### Beberapa kode mengambil referensi dari [Hisoka Morou](https://github.com/DikaArdnt/Hisoka-Morou)
 
