@@ -270,8 +270,8 @@ export async function getListCommands(): PromiseListCommands {
     const directory = await readdir("./Handlers");
     return new Promise((resolve, reject) => {
         directory.forEach((file) => {
-            if (file.endsWith("d.ts")) return;
-            if (file.endsWith("map")) return;
+            if (file.endsWith(".d.ts")) return;
+            if (file.endsWith(".js.map")) return;
             const mdl = (module: any) => {
                 Array.isArray(module.default.command);
                 if (typeof module.default.command !== "object") {
