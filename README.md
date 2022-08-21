@@ -18,7 +18,7 @@
 
 ### Beberapa kode mengambil referensi dari [Hisoka Morou](https://github.com/DikaArdnt/Hisoka-Morou)
 
-### `Settings`
+### `Sebelum start Setsu-Bot ganti beberapa setting dulu`
 
 -   Change Owner number ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L3)
 
