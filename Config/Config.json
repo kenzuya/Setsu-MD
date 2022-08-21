@@ -37,5 +37,9 @@
     "instagram": true,
     "twitter": true
   },
-  "enableLogs": false
+  "enableLogs": false,
+  "terminal.aliases": {
+    "pull": "git pull https://github.com/Kenzuya/Setsu-MD.git",
+    "restart": "pm2 restart 0"
+  }
 }
