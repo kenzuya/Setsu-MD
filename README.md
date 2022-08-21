@@ -18,12 +18,10 @@
 
 ### Beberapa kode mengambil referensi dari [Hisoka Morou](https://github.com/DikaArdnt/Hisoka-Morou)
 
-<!-- ### Script ini gratis, TAPI MINIMAL JANGAN DIJUAL LAH... -->
-
 ### `Settings`
 
-Change Owner number ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L3)
+-   Change Owner number ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L3)
 
-Change Author ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L12)
+-   Change Author ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L12)
 
-Change URL Thumbnails ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L28)
+-   Change URL Thumbnails ada [disini](https://github.com/Kenzuya/Setsu-MD/blob/master/Config/Config.json#L28)
