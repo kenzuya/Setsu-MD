@@ -60,6 +60,8 @@ ${m.italic}${m.bold}INFO BOT${m.bold}${m.italic}
                 };
                 setsu.sendMessage(m.chat, options, { quoted: ftroli(m.pushname) });
             }
+            case "liatcmd":
+                console.log(command);
             default:
         }
     } catch (err) {
