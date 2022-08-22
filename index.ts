@@ -5,7 +5,8 @@ import { release } from "os";
 import cfg from "./Config/Config.json";
 import Functions from "./Library/Functions";
 import { MemoryStore } from "./Library/Types";
-import { checkUpdates, getListCommands } from "./Library/Modules";
+import { checkUpdates, getListCommands, jsonformat } from "./Library/Modules";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 
 const store: MemoryStore = makeInMemoryStore({ logger: pino().child({ level: "debug", stream: "store" }) });
 store.readFromFile("./Data/MemoryStore.json");
@@ -27,7 +28,6 @@ async function start() {
                 const msg = await store.loadMessage(key.remoteJid!, key.id!, undefined);
                 return msg?.message || undefined;
             }
-            // only if store is present
             return {
                 conversation: "hello",
             };
@@ -35,6 +35,9 @@ async function start() {
     });
     const fn = Functions(setsu);
     Events(fn, Auth, command, store);
+    existsSync("./Data") ? undefined : mkdirSync("./Data");
+    existsSync("./Data/Temp") ? undefined : mkdirSync("./Data/Temp");
+    existsSync("./Data/UserDataSession.json") ? undefined : writeFileSync("./Data/UserDataSession.json", jsonformat("{}"));
 }
 
 start();
