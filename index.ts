@@ -37,7 +37,7 @@ async function start() {
     Events(fn, Auth, command, store);
     existsSync("./Data") ? undefined : mkdirSync("./Data");
     existsSync("./Data/Temp") ? undefined : mkdirSync("./Data/Temp");
-    existsSync("./Data/UserDataSession.json") ? undefined : writeFileSync("./Data/UserDataSession.json", jsonformat("{}"));
+    existsSync("./Data/UserDataSession.json") ? undefined : writeFileSync("./Data/UserDataSession.json", jsonformat([]));
 }
 
 start();
