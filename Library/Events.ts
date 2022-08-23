@@ -13,6 +13,8 @@ type Auth = {
     state: AuthenticationState;
     saveCreds: () => Promise<void>;
 };
+const Jid = new Map<string, string | undefined>([["jid", undefined]]);
+const Timestamp = new Map<string, number | null>([["timestamp", null]]);
 const Events = (setsu: WAMethods, Auth: Auth, command: ListCommands, store: MemoryStore) => {
     store.bind(setsu.ev);
     setsu.ev.on("connection.update", async (update) => {
@@ -69,7 +71,13 @@ const Events = (setsu: WAMethods, Auth: Auth, command: ListCommands, store: Memo
             if (!mek.message) return;
             if (mek.key && mek.key.remoteJid === "status@broadcast") return;
             if (mek.key.id?.startsWith("BAE5") && mek.key.id.length === 16) return;
+            if (Jid.get("jid") === mek.key.remoteJid && parseInt(mek.messageTimestamp?.toString()!) - Timestamp.get("timestamp")! < 4) {
+                Logger.warn("Duplicate message detected from " + mek.key.remoteJid, "#869BB9");
+                return;
+            }
             const m = await Serialize(setsu, mek, store);
+            Jid.set("jid", mek.key.remoteJid!);
+            Timestamp.set("timestamp", parseInt(mek.messageTimestamp?.toString()!));
             Setsu(setsu, m, command);
         } catch (err) {
             console.log(err);
