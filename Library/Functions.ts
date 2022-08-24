@@ -1,4 +1,5 @@
 import { WASocket, jidDecode, proto, MiscMessageGenerationOptions, AnyMessageContent, FullJid, WACallEvent } from "@adiwajshing/baileys";
+import { randomBytes } from "crypto";
 import { fromBuffer } from "file-type";
 import { existsSync, readFileSync } from "fs";
 import jimp from "jimp";
@@ -143,23 +144,24 @@ const Functions = (setsu: WASocket) => {
             ? path
             : Buffer.alloc(0);
         if (!Buffer.isBuffer(data)) throw new TypeError("Result is not Buffer");
-        const type = (await fromBuffer(data)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-        };
+        const type = await fromBuffer(data);
         return {
-            ...type,
+            ...type!,
             data,
         };
     };
-    // setsu.sendMedia = async (jid, path, caption, quoted, options) => {
-    //     const { ext, mime, data } = await setsu.getFile(path);
-    //     const messageType = mime.split("/")[0];
-    //     const mediaType = messageType.replace("application", "document") || messageType;
-    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //     // @ts-ignore
-    //     return await setsu.sendMessage(jid, { [`${mediaType}`]: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption, ...options }, { quoted });
-    // };
+    const sendMedia = async (jid: string, path: string | Buffer, caption?: string, quoted?: proto.IWebMessageInfo, options?: AnyMessageContent) => {
+        const { ext, mime, data } = await getFile(path);
+        if (mime.includes("video")) {
+            return await setsu.sendMessage(jid, { video: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption }, { quoted });
+        } else if (mime.includes("audio")) {
+            return await setsu.sendMessage(jid, { audio: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption }, { quoted });
+        } else if (mime.includes("image")) {
+            return await setsu.sendMessage(jid, { image: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption }, { quoted });
+        } else if (mime.includes("application")) {
+            return await setsu.sendMessage(jid, { document: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption }, { quoted });
+        } else return await setsu.sendMessage(jid, { document: data, mimetype: mime, fileName: randomBytes(10).toString("hex") + "." + ext, caption }, { quoted });
+    };
     // setsu.downloadMediaBuffer = async (message) => {
     //     const contentType = getContentType(message);
     //     const buffer = await downloadMediaMessage(message.audioMessage, "buffer", {}, { logger: pino({ level: "debug" }), reuploadRequest: setsu.updateMediaMessage });
@@ -209,6 +211,7 @@ const Functions = (setsu: WASocket) => {
     };
     const assigned = {
         ...setsu,
+        sendMedia,
         resize,
         decodeJid,
         setBio,
