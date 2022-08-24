@@ -41,7 +41,7 @@ const handler = async (setsu: WAMethods, m: MessageSerializer) => {
                 setsu.sendPresenceUpdate("recording", m.chat);
             }, 1000);
             const tiktok = await ttsave(m.args![0]);
-            const file = `./Temp/${crypto.randomBytes(10).toString("hex")}`;
+            const file = `./Data/Temp/${crypto.randomBytes(10).toString("hex")}`;
             await downloadv2(tiktok.link.nowm, file + ".mp4");
             await convertMP3(file + ".mp4", file + ".mp3");
             // setsu.sendAudio(m.chat, file + ".mp3", "Done ya kak");
