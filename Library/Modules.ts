@@ -9,13 +9,14 @@ import { FileExtension } from "file-type";
 import Jimp from "jimp";
 import { GroupMetadata } from "@adiwajshing/baileys";
 import chalk from "chalk";
-import { join } from "path";
-import { readdirSync } from "fs";
+import { join, parse } from "path";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { readdir } from "fs/promises";
 import { WAMethods } from "./Functions";
 import { MessageSerializer } from "./Serialize";
 import Logger from "./Logger";
 import { exec } from "child_process";
+import { randomUUID } from "crypto";
 export async function getBuffer(url: string) {
     try {
         const buffer = await (await fetch(url)).buffer();
@@ -212,8 +213,8 @@ export function tanggal(numer: number | string | Date = Date.now()) {
     const year = yy < 1000 ? yy + 1900 : yy;
     return `${thisDay}, ${day} - ${myMonths[bulan]} - ${year}`;
 }
-export function jsonformat(string: string) {
-    return JSON.stringify(string, null, 2);
+export function jsonformat(obj: object) {
+    return JSON.stringify(obj, null, 2);
 }
 export async function generateProfilePicture(buffer: Buffer) {
     const jimp_1 = await Jimp.read(buffer);
@@ -310,4 +311,52 @@ export async function checkUpdates() {
             });
         } else resolve("No update found");
     });
+}
+
+export function createSessionUUID(string: string): string {
+    existsSync("./Data/UserDataSession.json") ? undefined : writeFileSync("./Data/UserDataSession.json", jsonformat([]));
+    const uuid = randomUUID();
+    const data = readFileSync("./Data/UserDataSession.json").toString();
+    const parsed: SessionUUID = JSON.parse(data);
+    const encoded = textToBinary(string);
+    const json = {
+        [uuid]: encoded,
+    };
+    parsed.push(json);
+    writeFileSync("./Data/UserDataSession.json", jsonformat(parsed));
+    return uuid;
+}
+
+type SessionUUID = { [_: string]: string }[];
+export function useSessionUUID(uuid: string, cb: (result: string | undefined) => void): void {
+    existsSync("./Data/UserDataSession.json") ? undefined : writeFileSync("./Data/UserDataSession.json", jsonformat([]));
+    const data = readFileSync("./Data/UserDataSession.json").toString();
+    const parsed: SessionUUID = JSON.parse(data);
+    const value = parsed.find((x) => {
+        return x[uuid];
+    });
+    if (value) {
+        const decoded = binaryToText(value[uuid]);
+        cb(decoded);
+        const index = parsed.indexOf(value);
+        if (index > -1) {
+            parsed.splice(index, 1);
+            writeFileSync("./Data/UserDataSession.json", jsonformat(parsed));
+        }
+    } else cb(undefined);
+    return;
+}
+
+export function textToBinary(string: string) {
+    return string
+        .split("")
+        .map(function (char) {
+            return char.charCodeAt(0).toString(2);
+        })
+        .join(" ");
+}
+
+export function binaryToText(binary: string) {
+    const bin = binary.split(" ");
+    return bin.map((elem) => String.fromCharCode(parseInt(elem, 2))).join("");
 }
