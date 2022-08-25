@@ -9,4 +9,4 @@ Tests
 dist
 update.js
 .vscode
-build.ts
+build.js
