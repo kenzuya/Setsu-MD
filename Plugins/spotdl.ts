@@ -45,5 +45,15 @@ async function spotdlDownload(url: string): Promise<SpotDLMetadata> {
             .catch(reject);
     });
 }
+async function spotdlSearch(query: string): Promise<SpotDLMetadata[]> {
+    return new Promise((resolve, reject) => {
+        axios
+            .post(`https://spotify-api-express.herokuapp.com/search?query=${query}`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch(reject);
+    });
+}
 
-export { spotdlInfo, spotdlDownload };
+export { spotdlInfo, spotdlDownload, spotdlSearch };
