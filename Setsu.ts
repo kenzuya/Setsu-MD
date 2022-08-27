@@ -49,7 +49,7 @@ ${m.italic}${m.bold}INFO BOT${m.bold}${m.italic}
                 setsu.typing(m.chat);
                 const buffer = await getBuffer(global.url.thumb);
                 const Buttons: proto.Message.ButtonsMessage.IButton[] = [
-                    { buttonId: `${m.prefix}menu`, buttonText: { displayText: "📝 Menu" }, type: 1 },
+                    { buttonId: `${m.prefix}menus`, buttonText: { displayText: "📝 Menu" }, type: 1 },
                     { buttonId: `${m.prefix}owner`, buttonText: { displayText: "🔖 Owner" }, type: 1 },
                 ];
                 const options: AnyMessageContent = {
