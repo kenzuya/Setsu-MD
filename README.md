@@ -8,12 +8,8 @@
     <a href="https://github.com/Kenzuya">
         <img src="https://img.shields.io/badge/Author-Kenzuya-red">
     </a>
-    <a href="https://github.com/adiwajshing/Baileys">
-        <img src="https://img.shields.io/badge/Baileys-v4.4.0-green">
-    </a>
-    <a href="">
-        <img src="https://img.shields.io/badge/Setsu--MD-v1.0.0-blue">
-    </a>
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/adiwajshing/Baileys?color=blue&label=Baileys">
+   <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/Kenzuya/Setsu-MD?color=green&label=Version">
 </h3>
 
 ### Beberapa kode mengambil referensi dari [Hisoka Morou](https://github.com/DikaArdnt/Hisoka-Morou)
