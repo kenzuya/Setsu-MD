@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "nodemon index.ts --ignore Data/*",
-    "build": "rmdir build -r && tsc",
+    "dev": "nodemon index.ts --ignore *.json",
+    "build": "node build.js",
     "test": "jest"
   },
   "author": "Kenzuya",
