@@ -1,9 +1,10 @@
-import { proto, getContentType, jidNormalizedUser, downloadMediaMessage, isJidGroup, downloadContentFromMessage } from "@adiwajshing/baileys";
+import { proto, getContentType, jidNormalizedUser, downloadMediaMessage, isJidGroup } from "@adiwajshing/baileys";
 import moment from "moment-timezone";
 import * as global from "../Config/Config.json";
 import { WAMethods } from "./Functions";
 import { getGroupAdmins } from "./Modules";
 import { MemoryStore } from "./Types";
+import { MimeType } from "file-type";
 type Serializer = ReturnType<typeof Serialize>;
 export type MessageSerializer = Awaited<Serializer>;
 export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store: MemoryStore) => {
@@ -70,24 +71,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
             : ContentType === "liveLocationMessage"
             ? m.message?.liveLocationMessage?.contextInfo?.mentionedJid
             : [];
-    const Mimetype =
-        ContentType === "audioMessage"
-            ? m.message?.audioMessage?.mimetype
-            : ContentType === "imageMessage"
-            ? m.message?.imageMessage?.mimetype
-            : ContentType === "documentMessage"
-            ? m.message?.documentMessage?.mimetype
-            : ContentType === "stickerMessage"
-            ? m.message?.stickerMessage?.mimetype
-            : ContentType === "videoMessage"
-            ? m.message?.videoMessage?.mimetype
-            : ContentType === "viewOnceMessage"
-            ? m.message?.viewOnceMessage?.message?.imageMessage
-                ? m.message?.viewOnceMessage?.message?.imageMessage.mimetype
-                : m.message?.viewOnceMessage?.message?.videoMessage
-                ? m.message?.viewOnceMessage?.message?.videoMessage?.mimetype
-                : undefined
-            : undefined;
+    const Mimetype = getContentMimetype(m.message!);
     const MessageQuoted =
         ContentType === "audioMessage"
             ? m.message?.audioMessage?.contextInfo?.quotedMessage
@@ -111,9 +95,6 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
             ? m.message?.liveLocationMessage?.contextInfo?.quotedMessage
             : undefined;
     const MessageQuotedType = MessageQuoted ? getContentType(MessageQuoted) : null;
-    // const MessageQuotedMimetype = MessageQuoted
-    //     ? MessageQuotedType === 'audioMessage' ? m.message
-    //     : undefined;
     const prefixer = global.prefa ? (/^[°•π÷×¶∆£¢€¥®™+✓_/=|~!?@#$%^&.©^]/gi.test(MessageText!) ? MessageText!.match(/^[°•π÷×¶∆£¢€¥®™+✓/_=|~!?@#$%^&.©^]/gi)![0] : "") : global.prefa ?? "";
     const Arguments = MessageText?.trim().split(/ +/).slice(1);
     const Message = ContentType == "viewOnceMessage" ? m.message![ContentType]?.message![getContentType(m.message![ContentType]?.message!)!] : m.message![ContentType!];
@@ -154,7 +135,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
         quoted: MessageQuoted
             ? {
                   message: MessageQuoted,
-                  //   mimetype: getContentType(MessageQuoted),
+                  mimetype: getContentMimetype(MessageQuoted),
                   delete: () => conn.sendMessage(UserJid, { delete: M.fromObject(MessageQuoted).key }),
                   mtype: MessageQuotedType,
                   download: async () => await downloadMediaMessage(M.fromObject(MessageQuoted!), "buffer", {}),
@@ -182,3 +163,45 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
     return MessageInfo;
 };
 // export type MessagesInfo = ReturnType<typeof MessageInfo>;
+export function getContentMimetype(Message: proto.IMessage): MimeType | undefined {
+    const mtype = getContentType(Message);
+    if (mtype === "audioMessage") return Message.audioMessage?.mimetype as MimeType;
+    else if (mtype === "imageMessage") return Message.imageMessage?.mimetype as MimeType;
+    else if (mtype === "videoMessage") return Message.videoMessage?.mimetype as MimeType;
+    else if (mtype === "stickerMessage") return Message.stickerMessage?.mimetype as MimeType;
+    else if (mtype === "documentMessage") return Message.documentMessage?.mimetype as MimeType;
+    else if (mtype === "viewOnceMessage") {
+        const viewOnceType = getContentType(Message.viewOnceMessage?.message as proto.IMessage);
+        if (viewOnceType === "imageMessage") return Message.viewOnceMessage?.message?.imageMessage?.mimetype as MimeType;
+        else if (viewOnceType === "videoMessage") return Message.viewOnceMessage?.message?.videoMessage?.mimetype as MimeType;
+    } else return undefined;
+}
+
+export function getMessageText(message: proto.IMessage) {
+    const ContentType = getContentType(message);
+    const MessageText =
+        ContentType === "conversation"
+            ? message?.conversation
+            : ContentType === "imageMessage"
+            ? message?.imageMessage?.caption
+            : ContentType === "videoMessage"
+            ? message?.videoMessage?.caption
+            : ContentType === "extendedTextMessage"
+            ? message?.extendedTextMessage?.text
+            : ContentType === "buttonsResponseMessage"
+            ? message?.buttonsResponseMessage?.selectedButtonId
+            : ContentType === "listResponseMessage"
+            ? message?.listResponseMessage?.singleSelectReply?.selectedRowId
+            : ContentType === "templateButtonReplyMessage"
+            ? message?.templateButtonReplyMessage?.selectedId
+            : ContentType === "messageContextInfo"
+            ? message?.buttonsResponseMessage?.selectedButtonId || message?.listResponseMessage?.singleSelectReply?.selectedRowId
+            : ContentType === "viewOnceMessage"
+            ? message?.viewOnceMessage?.message?.imageMessage
+                ? message?.viewOnceMessage?.message?.imageMessage.caption
+                : message?.viewOnceMessage?.message?.videoMessage
+                ? message?.viewOnceMessage?.message?.videoMessage?.caption
+                : undefined
+            : undefined;
+    return MessageText;
+}
