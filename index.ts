@@ -7,10 +7,8 @@ import Functions from "./Library/Functions";
 import { MemoryStore } from "./Library/Types";
 import { checkUpdates, getListCommands, jsonformat } from "./Library/Modules";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
-
 const store: MemoryStore = makeInMemoryStore({ logger: pino().child({ level: "debug", stream: "store" }) });
 store.readFromFile("./Data/MemoryStore.json");
-
 async function start() {
     await checkUpdates();
     const command = await getListCommands();
@@ -19,7 +17,7 @@ async function start() {
         auth: Auth.state,
         printQRInTerminal: false,
         browser: ["Setsu-Bot", "safari", release()],
-        logger: pino({ level: "silent" }),
+        logger: pino({ level: cfg.enableLogs ? "debug" : "silent" }),
         syncFullHistory: true,
         markOnlineOnConnect: true,
         downloadHistory: true,
