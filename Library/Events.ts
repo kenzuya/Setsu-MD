@@ -1,10 +1,10 @@
-import { AuthenticationState, DisconnectReason } from "@adiwajshing/baileys";
+import { AuthenticationState, DisconnectReason, getContentType, isJidGroup } from "@adiwajshing/baileys";
 import { Boom } from "@hapi/boom";
 import * as QR from "qrcode-terminal";
 import Logger from "./Logger";
 import { rm } from "fs/promises";
 import { WAMethods } from "./Functions";
-import { Serialize } from "./Serialize";
+import { getMessageText, Serialize } from "./Serialize";
 import { MemoryStore } from "./Types";
 import * as config from "../Config/Config.json";
 import Setsu from "../Setsu";
@@ -13,8 +13,14 @@ type Auth = {
     state: AuthenticationState;
     saveCreds: () => Promise<void>;
 };
-const Jid = new Map<string, string | undefined>([["jid", undefined]]);
-const Timestamp = new Map<string, number | null>([["timestamp", null]]);
+type MapKey = "jid" | "timestamp" | "text" | "type";
+type MapValueType = string | undefined;
+const vars = new Map<MapKey, MapValueType>([
+    ["jid", undefined],
+    ["text", undefined],
+    ["type", undefined],
+]);
+const Timestamp = new Map<"timestamp", number | null>([["timestamp", null]]);
 const Events = (setsu: WAMethods, Auth: Auth, command: ListCommands, store: MemoryStore) => {
     store.bind(setsu.ev);
     setsu.ev.on("connection.update", async (update) => {
@@ -68,15 +74,28 @@ const Events = (setsu: WAMethods, Auth: Auth, command: ListCommands, store: Memo
         try {
             store.writeToFile("./Data/MemoryStore.json");
             const mek = chatUpdate.messages[0];
+            const ContentType = getContentType(mek.message!);
+            const text = getMessageText(mek.message!);
+            const sender = setsu.decodeJid((mek.key.fromMe && setsu.user?.id) || mek.participant || mek.key.participant || mek.key.remoteJid || "");
             if (!mek.message) return;
             if (mek.key && mek.key.remoteJid === "status@broadcast") return;
             if (mek.key.id?.startsWith("BAE5") && mek.key.id.length === 16) return;
-            if (Jid.get("jid") === mek.key.remoteJid && parseInt(mek.messageTimestamp?.toString()!) - Timestamp.get("timestamp")! < 4) {
-                Logger.warn("Duplicate message detected from " + mek.key.remoteJid, "#869BB9");
+            if (
+                vars.get("jid") === sender &&
+                parseInt(mek.messageTimestamp?.toString()!) - Timestamp.get("timestamp")! < 4 &&
+                ContentType !== "protocolMessage" &&
+                vars.get("text") === text &&
+                vars.get("type") === ContentType
+            ) {
+                if (isJidGroup(mek.key.remoteJid!)) Logger.warn(`Duplicate message detected from ${sender} in group ${mek.key.remoteJid}`, "#869BB9");
+                else Logger.warn(`Duplicate message detected from ${sender}`, "#869BB9");
                 return;
             }
             const m = await Serialize(setsu, mek, store);
-            Jid.set("jid", mek.key.remoteJid!);
+            config.enableLogs ? console.log(m) : undefined;
+            vars.set("jid", sender);
+            vars.set("text", text ? text : undefined);
+            vars.set("type", ContentType !== "protocolMessage" ? ContentType : undefined);
             Timestamp.set("timestamp", parseInt(mek.messageTimestamp?.toString()!));
             Setsu(setsu, m, command);
         } catch (err) {
