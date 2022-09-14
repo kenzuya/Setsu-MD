@@ -36,7 +36,7 @@
     "qs": "^6.11.0",
     "tslib": "^2.4.0",
     "util": "^0.12.4",
-    "ytdl-core": "^4.11.1"
+    "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
