@@ -139,6 +139,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
                   delete: () => conn.sendMessage(UserJid, { delete: M.fromObject(MessageQuoted).key }),
                   mtype: MessageQuotedType,
                   download: async () => await downloadMediaMessage(M.fromObject(MessageQuoted!), "buffer", {}),
+                  id: getStanzaID(MessageQuoted),
               }
             : undefined,
         group: isGroup
@@ -204,4 +205,78 @@ export function getMessageText(message: proto.IMessage) {
                 : undefined
             : undefined;
     return MessageText;
+}
+
+export function getStanzaID(message: proto.IMessage) {
+    const ContentType = getContentType(message);
+    let ViewOnceContentType;
+    if (ContentType === "viewOnceMessage") ViewOnceContentType = getContentType(message.viewOnceMessage?.message!);
+    const StanzaID =
+        ContentType === "audioMessage"
+            ? message.audioMessage?.contextInfo?.stanzaId
+            : ContentType === "buttonsMessage"
+            ? message.buttonsMessage?.contextInfo?.stanzaId
+            : ContentType === "buttonsResponseMessage"
+            ? message.buttonsResponseMessage?.contextInfo?.stanzaId
+            : ContentType === "cancelPaymentRequestMessage"
+            ? message.cancelPaymentRequestMessage?.key?.id
+            : ContentType === "chat"
+            ? message.chat?.id
+            : ContentType === "contactMessage"
+            ? message.contactMessage?.contextInfo?.stanzaId
+            : ContentType === "contactsArrayMessage"
+            ? message.contactsArrayMessage?.contextInfo?.stanzaId
+            : ContentType === "declinePaymentRequestMessage"
+            ? message.declinePaymentRequestMessage?.key?.id
+            : ContentType === "documentMessage"
+            ? message.documentMessage?.contextInfo?.stanzaId
+            : ContentType === "extendedTextMessage"
+            ? message.extendedTextMessage?.contextInfo?.stanzaId
+            : ContentType === "groupInviteMessage"
+            ? message.groupInviteMessage?.contextInfo?.stanzaId
+            : ContentType === "imageMessage"
+            ? message.imageMessage?.contextInfo?.stanzaId
+            : ContentType === "interactiveMessage"
+            ? message.interactiveMessage?.contextInfo?.stanzaId
+            : ContentType === "interactiveResponseMessage"
+            ? message.interactiveResponseMessage?.contextInfo?.stanzaId
+            : ContentType === "keepInChatMessage"
+            ? message.keepInChatMessage?.key?.id
+            : ContentType === "listMessage"
+            ? message.listMessage?.contextInfo?.stanzaId
+            : ContentType === "listResponseMessage"
+            ? message.listResponseMessage?.contextInfo?.stanzaId
+            : ContentType === "liveLocationMessage"
+            ? message.liveLocationMessage?.contextInfo?.stanzaId
+            : ContentType === "locationMessage"
+            ? message.locationMessage?.contextInfo?.stanzaId
+            : ContentType === "orderMessage"
+            ? message.orderMessage?.contextInfo?.stanzaId
+            : ContentType === "pollCreationMessage"
+            ? message.pollCreationMessage?.contextInfo?.stanzaId
+            : ContentType === "pollUpdateMessage"
+            ? message.pollUpdateMessage?.pollCreationMessageKey?.id
+            : ContentType === "productMessage"
+            ? message.productMessage?.contextInfo?.stanzaId
+            : ContentType === "protocolMessage"
+            ? message.protocolMessage?.key?.id
+            : ContentType === "reactionMessage"
+            ? message.reactionMessage?.key?.id
+            : ContentType === "stickerMessage"
+            ? message.stickerMessage?.contextInfo?.stanzaId
+            : ContentType === "templateButtonReplyMessage"
+            ? message.templateButtonReplyMessage?.contextInfo?.stanzaId
+            : ContentType === "templateMessage"
+            ? message.templateMessage?.contextInfo?.stanzaId
+            : ContentType === "videoMessage"
+            ? message.videoMessage?.contextInfo?.stanzaId
+            : ContentType === "viewOnceMessage"
+            ? ViewOnceContentType === "imageMessage"
+                ? message.viewOnceMessage?.message?.imageMessage?.contextInfo?.stanzaId
+                : ViewOnceContentType === "videoMessage"
+                ? message.viewOnceMessage?.message?.videoMessage?.contextInfo?.stanzaId
+                : undefined
+            : undefined;
+
+    return StanzaID;
 }
