@@ -47,13 +47,12 @@ ${m.italic}${m.bold}INFO BOT${m.bold}${m.italic}
             case "menu": {
                 if (m.isGroup) return;
                 setsu.typing(m.chat);
-                const buffer = await getBuffer(global.url.thumb);
                 const Buttons: proto.Message.ButtonsMessage.IButton[] = [
                     { buttonId: `${m.prefix}menus`, buttonText: { displayText: "📝 Menu" }, type: 1 },
                     { buttonId: `${m.prefix}owner`, buttonText: { displayText: "🔖 Owner" }, type: 1 },
                 ];
                 const options: AnyMessageContent = {
-                    image: buffer!,
+                    image: { url: global.url.thumb },
                     caption: menu,
                     footer: m.footer,
                     buttons: Buttons,
