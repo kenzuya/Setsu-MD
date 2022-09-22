@@ -270,7 +270,7 @@ export async function getListCommands(): PromiseListCommands {
     const command: ListCommands = new Array();
     const directory = await readdir("./Handlers");
     return new Promise((resolve, reject) => {
-        directory.forEach((file) => {
+        directory.forEach((file, index) => {
             if (file.endsWith(".d.ts")) return;
             if (file.endsWith(".js.map")) return;
             const mdl = (module: any) => {
@@ -283,12 +283,12 @@ export async function getListCommands(): PromiseListCommands {
                     return;
                 } else {
                     !!command.push({ command: module.default.command, main: module.default, file: file });
+                    if (directory.length - 1 === index) Logger.warn("Completed...", "#6dff24");
                     resolve(command);
                 }
             };
             import("../Handlers/"! + file).then(mdl);
         });
-        Logger.warn("Completed...", "#6dff24");
     });
 }
 
