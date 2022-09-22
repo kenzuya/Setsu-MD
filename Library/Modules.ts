@@ -106,7 +106,9 @@ export async function downloadv2(url: string, path: string) {
     const dl = await new EasyDL(url, path, {
         connections: 20,
         maxRetry: 5,
-    }).wait();
+    })
+        .setMaxListeners(25)
+        .wait();
     return dl;
 }
 export function ucapanWaktu(timezone = "Asia/Jakarta") {
