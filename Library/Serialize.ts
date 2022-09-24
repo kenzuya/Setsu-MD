@@ -1,4 +1,4 @@
-import { proto, getContentType, jidNormalizedUser, downloadMediaMessage, isJidGroup } from "@adiwajshing/baileys";
+import { proto, getContentType, jidNormalizedUser, downloadMediaMessage, isJidGroup, getDevice } from "@adiwajshing/baileys";
 import moment from "moment-timezone";
 import * as global from "../Config/Config.json";
 import { WAMethods } from "./Functions";
@@ -9,7 +9,6 @@ type Serializer = ReturnType<typeof Serialize>;
 export type MessageSerializer = Awaited<Serializer>;
 export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store: MemoryStore) => {
     if (!m) return m;
-    const M = proto.WebMessageInfo;
     const ContentType = getContentType(m.message!);
     const MessageText =
         ContentType === "conversation"
@@ -105,6 +104,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
     const GroupMetadata = isGroup ? await conn.groupMetadata(UserJid) : undefined;
     const GroupParticipant = isGroup ? GroupMetadata?.participants.map((value) => jidNormalizedUser(value.id)) : [];
     const ListGroupAdmins = getGroupAdmins(GroupMetadata!);
+    const DeviceType = getDevice(m.key.id!);
     const MessageInfo = {
         footer: `© it's me Setsu || ${moment().locale("id").format("DD MMMM YYYY")}`,
         monospace: "```",
@@ -129,6 +129,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
         prefix: isCommand ? (global.prefa.includes(MessageText ? MessageText.charAt(0) : "") ? MessageText?.charAt(0) : undefined) : undefined,
         itsMe: UserGroupJid == conn?.user?.id ? true : false,
         mimetype: Mimetype,
+        device: DeviceType,
         isMedia: /image|video|sticker|audio/.test(Mimetype ? Mimetype : ""),
         query: Arguments?.join(" "),
         mentionedJid: MentionedJid!,
@@ -136,10 +137,15 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
             ? {
                   message: MessageQuoted,
                   mimetype: getContentMimetype(MessageQuoted),
-                  delete: () => conn.sendMessage(UserJid, { delete: M.fromObject(MessageQuoted).key }),
+                  delete: () => conn.sendMessage(UserJid, { delete: { id: getStanzaID(m.message!), remoteJid: UserJid, participant: UserGroupJid, fromMe: true } }),
                   mtype: MessageQuotedType,
-                  download: async () => await downloadMediaMessage(M.fromObject(MessageQuoted!), "buffer", {}),
-                  id: getStanzaID(MessageQuoted),
+                  download: async () =>
+                      (await downloadMediaMessage(
+                          { message: MessageQuoted, key: { id: getStanzaID(m.message!), remoteJid: UserJid, participant: UserGroupJid, fromMe: true } },
+                          "buffer",
+                          {}
+                      )) as unknown as Promise<Buffer>,
+                  id: getStanzaID(m.message!),
               }
             : undefined,
         group: isGroup
@@ -159,8 +165,6 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
             : undefined,
         reply: (text: string) => conn.sendMessage(UserJid, { text }, { quoted: m }),
     };
-    // console.log(GroupMetadata);
-
     return MessageInfo;
 };
 // export type MessagesInfo = ReturnType<typeof MessageInfo>;
