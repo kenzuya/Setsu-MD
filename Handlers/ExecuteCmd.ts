@@ -5,8 +5,13 @@ import { custom_msg } from "../Library/Fakes";
 import { ucapanWaktu } from "../Library/Modules";
 import * as cfg from "../Config/Config.json";
 const handler = (setsu: WAMethods, m: MessageSerializer) => {
-    if (m.isCreator === false) return setsu.sendMessage(m.chat, { text: cfg.mess.owner }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
-    if (!m.query) return setsu.sendMessage(m.chat, { text: `Ketik ${m.bold}${m.prefix}${m.command} <perintah>${m.bold}` }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
+    if (m.isCreator === false) return setsu.sendMessage(m.chat, { text: cfg.mess.owner }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
+    if (!m.query)
+        return setsu.sendMessage(
+            m.chat,
+            { text: `Ketik ${m.bold}${m.prefix}${m.command} <perintah>${m.bold}` },
+            m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined
+        );
     const Aliases = Object.keys(cfg["terminal.aliases"]);
     const command = m.query === "pull" ? "pull" : m.query === "restart" ? "restart" : undefined;
     if (Aliases.includes(m.query)) execute(cfg["terminal.aliases"][command!]);
