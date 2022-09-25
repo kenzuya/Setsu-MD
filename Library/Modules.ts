@@ -107,7 +107,7 @@ export async function downloadv2(url: string, path: string) {
         connections: 20,
         maxRetry: 5,
     })
-        .setMaxListeners(25)
+        .setMaxListeners(0)
         .wait();
     return dl;
 }
