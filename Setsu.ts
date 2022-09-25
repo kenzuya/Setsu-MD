@@ -48,8 +48,8 @@ ${m.italic}${m.bold}INFO BOT${m.bold}${m.italic}
                 if (m.isGroup) return;
                 setsu.typing(m.chat);
                 const Buttons: proto.Message.ButtonsMessage.IButton[] = [
-                    { buttonId: `${m.prefix}menus`, buttonText: { displayText: "📝 Menu" }, type: 1 },
-                    { buttonId: `${m.prefix}owner`, buttonText: { displayText: "🔖 Owner" }, type: 1 },
+                    { buttonId: `.menus`, buttonText: { displayText: "📝 Menu" }, type: 1 },
+                    { buttonId: `.owner`, buttonText: { displayText: "🔖 Owner" }, type: 1 },
                 ];
                 const options: AnyMessageContent = {
                     image: { url: global.url.thumb },
@@ -57,7 +57,7 @@ ${m.italic}${m.bold}INFO BOT${m.bold}${m.italic}
                     footer: m.footer,
                     buttons: Buttons,
                 };
-                setsu.sendMessage(m.chat, options, { quoted: ftroli(m.pushname) });
+                setsu.sendMessage(m.chat, options, m.device !== "web" ? { quoted: ftroli(m.pushname) } : undefined);
             }
             default:
         }
