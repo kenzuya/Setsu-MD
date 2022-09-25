@@ -32,12 +32,16 @@ const handler = async (setsu: WAMethods, m: MessageSerializer) => {
 NOTE: ${m.bold}Fitur ini masih dalam tahap pengembangan, mungkin lagu yang dikirim tidak akan sesuai.${m.bold}
 ${m.italic}Gunakan fitur ini dengan bijak.${m.italic}
         `;
-        setsu.sendMessage(m.chat, { image: coverImage!, caption: caption, mimetype: fileType?.mime }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
+        setsu.sendMessage(m.chat, { image: coverImage!, caption: caption, mimetype: fileType?.mime }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
         const spotdl = await spotdlDownload(m.args![0] || m.text!);
         const song_buffer = await getBuffer(spotdl.download_url!);
         const song_type = await fromBuffer(song_buffer!);
         const song_name = `${data.name} - ${data.artists.join(", ")}`;
-        setsu.sendMessage(m.chat, { audio: song_buffer!, fileName: song_name + "." + song_type?.ext, mimetype: song_type?.mime }, { quoted: custom_msg(`${song_name}`) });
+        setsu.sendMessage(
+            m.chat,
+            { document: song_buffer!, fileName: song_name + "." + song_type?.ext, mimetype: song_type?.mime! },
+            m.device !== "web" ? { quoted: custom_msg(`${song_name}`) } : undefined
+        );
     } catch (err) {
         m.reply(`Gagal mengambil data lagu, pastikan URL Valid!`);
         console.log(err);
