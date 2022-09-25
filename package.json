@@ -1,6 +1,6 @@
 {
   "name": "setsu-md",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Setsu Bot TypeScript version",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "moment-timezone": "^0.5.34",
     "node-fetch": "2.6.7",
     "node-webpmux": "^3.1.1",
+    "performance-now": "^2.1.0",
     "pino": "^8.1.0",
     "qrcode": "^1.5.0",
     "qrcode-terminal": "^0.12.0",
