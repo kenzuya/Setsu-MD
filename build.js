@@ -1,4 +1,4 @@
-const { readdirSync, readFileSync, statSync, writeFileSync, existsSync, rmdirSync } = require("fs");
+const { readdirSync, readFileSync, statSync, writeFileSync, existsSync, rmdirSync, mkdirSync } = require("fs");
 const pack = require("./package.json");
 const JSZip = require("jszip");
 const { execSync } = require("child_process");
@@ -8,6 +8,9 @@ function build() {
     if (existsSync("./build")) rmdirSync("./build", { recursive: true });
     console.log("Building...");
     execSync("tsc");
+    console.log("Completed...");
+    console.log("Archiving files...");
+    if (!existsSync("./dist")) mkdirSync("./dist");
     const dir = readdirSync("./build");
     console.log("Creating Zip files...");
     dir.forEach((subdir) => {
@@ -19,13 +22,14 @@ function build() {
             const files = readdirSync(`./build/${subdir}`);
             files.forEach((files) => {
                 // console.log(__dirname);
-
-                folder?.file(files, readFileSync(`./build/${subdir}/${files}`));
+                if (files.startsWith("_")) return;
+                else folder?.file(files, readFileSync(`./build/${subdir}/${files}`));
             });
         } else zip.file(subdir, readFileSync(`./build/${subdir}`));
     });
 
     delete pack.devDependencies;
+    pack.scripts.start = "node index.js";
     const packaged = JSON.stringify(pack, null, 2);
     zip.file("package.json", packaged);
     if (JSZip.support.uint8array)
