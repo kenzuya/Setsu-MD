@@ -13,9 +13,9 @@ const handler = (setsu: WAMethods, m: MessageSerializer) => {
     else execute(m.query);
     function execute(command: string) {
         exec(command, (err, stdout, stderr) => {
-            if (err) return setsu.sendMessage(m.chat, { text: `${err}` }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
-            if (stderr) return setsu.sendMessage(m.chat, { text: `${stderr}` }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
-            setsu.sendMessage(m.chat, { text: `${stdout}` }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
+            if (err) return setsu.sendMessage(m.chat, { text: `${err}` }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
+            if (stderr) return setsu.sendMessage(m.chat, { text: `${stderr}` }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
+            setsu.sendMessage(m.chat, { text: `${stdout}` }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
         });
     }
 };

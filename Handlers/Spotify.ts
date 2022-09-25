@@ -9,7 +9,8 @@ import { MessageSerializer } from "../Library/Serialize";
 
 const handler = async (setsu: WAMethods, m: MessageSerializer) => {
     if (m.isCmd) {
-        if (!m.query) return setsu.sendMessage(m.chat, { text: `Ketik ${m.prefix || "."}${m.command} <url>` }, { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) });
+        if (!m.query)
+            return setsu.sendMessage(m.chat, { text: `Ketik ${m.prefix || "."}${m.command} <url>` }, m.device !== "web" ? { quoted: custom_msg(`${ucapanWaktu()} ${m.pushname}`) } : undefined);
     }
     try {
         m.reply(config.mess.wait);

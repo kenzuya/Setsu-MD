@@ -7,7 +7,7 @@ const handler = (setsu: WAMethods, m: MessageSerializer) => {
     useSessionUUID(m.args![0], async (result) => {
         if (result) {
             m.reply(config.mess.wait);
-            return setsu.sendMedia(m.chat, result, config.mess.done, custom_msg(ucapanWaktu()! + m.pushname));
+            return setsu.sendMedia(m.chat, result, config.mess.done, m.device !== "web" ? custom_msg(ucapanWaktu()! + m.pushname) : undefined);
         } else return m.reply(`${m.bold}Session telah expired...${m.bold}\nKirim ulang perintahnya!`);
     });
 };

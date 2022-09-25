@@ -33,7 +33,7 @@ ${m.bold}Tunggu sebentar Bot akan mengirim filenya${m.bold}
         setsu.sendMessage(
             m.chat,
             { document: buffer as Buffer, footer: m.footer, fileName: mf.filename, mimetype: filetype!.mime, caption: `${m.italic}Nih filenya${m.italic}` },
-            { quoted: ftroli(m.pushname, m.command) }
+            m.device !== "web" ? { quoted: ftroli(m.pushname, m.command) } : undefined
         );
     } catch (err) {
         m.reply(`${m.bold}File tidak tersedia!!!${m.bold}`);
