@@ -5,6 +5,7 @@ import { WAMethods } from "./Functions";
 import { getGroupAdmins } from "./Modules";
 import { MemoryStore } from "./Types";
 import { MimeType } from "file-type";
+import { readFileSync } from "fs";
 type Serializer = ReturnType<typeof Serialize>;
 export type MessageSerializer = Awaited<Serializer>;
 export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store: MemoryStore) => {
@@ -105,6 +106,9 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
     const GroupParticipant = isGroup ? GroupMetadata?.participants.map((value) => jidNormalizedUser(value.id)) : [];
     const ListGroupAdmins = getGroupAdmins(GroupMetadata!);
     const DeviceType = getDevice(m.key.id!);
+    const Data = readFileSync("./Config/Config.json").toString();
+    const Json: typeof global = JSON.parse(Data);
+    const Public: boolean = Json.public;
     const MessageInfo = {
         footer: `© it's me Setsu || ${moment().locale("id").format("DD MMMM YYYY")}`,
         monospace: "```",
@@ -130,6 +134,7 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
         itsMe: UserGroupJid == conn?.user?.id ? true : false,
         mimetype: Mimetype,
         device: DeviceType,
+        public: Public,
         isMedia: /image|video|sticker|audio/.test(Mimetype ? Mimetype : ""),
         query: Arguments?.join(" "),
         mentionedJid: MentionedJid!,

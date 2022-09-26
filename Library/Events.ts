@@ -92,6 +92,7 @@ const Events = (setsu: WAMethods, Auth: Auth, command: ListCommands, store: Memo
                 return;
             }
             const m = await Serialize(setsu, mek, store);
+            if (!m.public && !m.isCreator) return;
             config.enableLogs ? console.log(m) : undefined;
             vars.set("jid", sender);
             vars.set("text", text ? text : undefined);
