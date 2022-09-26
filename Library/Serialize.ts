@@ -109,11 +109,15 @@ export const Serialize = async (conn: WAMethods, m: proto.IWebMessageInfo, store
     const Data = readFileSync("./Config/Config.json").toString();
     const Json: typeof global = JSON.parse(Data);
     const Public: boolean = Json.public;
+    const Footer = `© it's me Setsu || ${moment().locale("id").format("DD MMMM YYYY")}`;
+    const FontMonospace: "```" = "```";
+    const FontBold: "*" = "*";
+    const FontItalic: "_" = "_";
     const MessageInfo = {
-        footer: `© it's me Setsu || ${moment().locale("id").format("DD MMMM YYYY")}`,
-        monospace: "```",
-        bold: "*",
-        italic: "_",
+        footer: Footer,
+        monospace: FontMonospace,
+        bold: FontBold,
+        italic: FontItalic,
         id: m.key.id,
         isBaileys: m.key.id!.startsWith("BAE5") && m.key.id!.length === 16,
         chat: UserJid,
