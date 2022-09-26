@@ -17,6 +17,7 @@ import { MessageSerializer } from "./Serialize";
 import Logger from "./Logger";
 import { exec } from "child_process";
 import { randomUUID } from "crypto";
+import type * as config from "../Config/Config.json";
 export async function getBuffer(url: string) {
     try {
         const buffer = await (await fetch(url)).buffer();
@@ -361,4 +362,18 @@ export function textToBinary(string: string) {
 export function binaryToText(binary: string) {
     const bin = binary.split(" ");
     return bin.map((elem) => String.fromCharCode(parseInt(elem, 2))).join("");
+}
+
+type PublicMode = "public" | "private";
+export function setMode(mode: Required<PublicMode>) {
+    const path = "./Config/Config.json";
+    const data = readFileSync(path).toString();
+    const json: typeof config = JSON.parse(data);
+    function set(mode: boolean) {
+        json.public = mode;
+        const stringify = jsonformat(json);
+        writeFileSync(path, stringify);
+    }
+    if (mode === "public") set(true);
+    else if (mode === "private") set(false);
 }
